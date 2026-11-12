@@ -101,37 +101,61 @@ function RailDiagram() {
 
 function GearDiagram() {
   return (
-    <svg viewBox="0 0 320 150" className="h-full w-full" role="img" aria-labelledby="gear-diagram-title">
+    <svg viewBox="0 0 320 170" className="h-full w-full" role="img" aria-labelledby="gear-diagram-title">
       <title id="gear-diagram-title">
         Side view: the gear teeth on a Beyblade X Bit mesh with the teeth of the X-Celerator Rail, launching the top forward.
       </title>
-      <rect x="0" y="118" width="320" height="14" fill="#f8f8f8" />
-      <g fill="#f8f8f8">
-        {Array.from({ length: 27 }).map((_, i) => (
-          <rect key={i} x={i * 12} y="110" width="6" height="9" />
+      <defs>
+        <linearGradient id="gd-metal" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ffffff" />
+          <stop offset="0.45" stopColor="#aeb8c6" />
+          <stop offset="0.7" stopColor="#4f5967" />
+          <stop offset="1" stopColor="#c9d1db" />
+        </linearGradient>
+        <radialGradient id="gd-spark" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#ffffff" />
+          <stop offset="0.35" stopColor="#c6f31a" stopOpacity="0.9" />
+          <stop offset="1" stopColor="#c6f31a" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      {/* Rail: lime toothed track */}
+      <rect x="0" y="140" width="320" height="10" rx="2" fill="#c6f31a" />
+      <g fill="#c6f31a">
+        {Array.from({ length: 32 }).map((_, i) => (
+          <rect key={i} x={i * 10 + 1} y="132" width="5" height="9" rx="1" />
         ))}
       </g>
+      
       <g className="motion-safe:animate-[railslide_2.6s_cubic-bezier(.6,0,.2,1)_infinite]">
-        <rect x="40" y="38" width="90" height="18" fill="#f8f8f8" />
-        <rect x="55" y="56" width="60" height="16" fill="#3a3d34" />
-        <path d="M62 72 H108 L98 104 H72 Z" fill="#c6f31a" />
-        <g fill="#f8f8f8">
-          {[66, 74, 82, 90, 98].map((x) => (
-            <rect key={x} x={x} y="100" width="5" height="9" />
+        {/* speed lines */}
+        {[0, 1, 2, 3].map((i) => (
+          <rect key={i} x={-34 - i * 18} y={52 + i * 16} width={40 - i * 6} height="4" rx="2" fill="#c6f31a" opacity={0.8 - i * 0.18} />
+        ))}
+        {/* blade */}
+        <path d="M18 54 L34 38 H134 L150 54 L140 66 H28 Z" fill="url(#gd-metal)" stroke="#1b2130" strokeWidth="1.5" />
+        <path d="M44 38 L52 30 H100 L108 38 Z" fill="#2f6fe0" stroke="#1b2130" strokeWidth="1.5" />
+        {/* ratchet */}
+        <rect x="56" y="66" width="56" height="18" rx="3" fill="#2b2f36" stroke="#0b0d12" strokeWidth="1.5" />
+        <rect x="60" y="72" width="48" height="4" fill="#c6f31a" opacity="0.7" />
+        {/* bit with gear teeth */}
+        <path d="M64 84 H104 L96 122 H72 Z" fill="#c6f31a" stroke="#0b0d12" strokeWidth="1.5" />
+        <g fill="#0b0d12">
+          {[70, 78, 86, 94].map((x) => (
+            <rect key={x} x={x} y="112" width="4" height="10" />
           ))}
         </g>
-        {[0, 1, 2].map((i) => (
-          <rect key={i} x={-10 - i * 22} y={46 + i * 14} width={18 - i * 4} height="4" fill="#f8f8f8" opacity={0.7 - i * 0.2} />
-        ))}
+        <path d="M76 122 H92 L86 132 H82 Z" fill="#e9edf2" />
+        {/* spark where the teeth mesh */}
+        <circle cx="84" cy="134" r="16" fill="url(#gd-spark)" />
       </g>
-      <style>{`@keyframes railslide { 0% { transform: translateX(-60px); } 75% { transform: translateX(150px); } 100% { transform: translateX(150px); opacity: 0; } }`}</style>
+      <style>{`@keyframes railslide { 0% { transform: translateX(-80px); opacity: 0; } 12% { opacity: 1; } 70% { transform: translateX(170px); opacity: 1; } 100% { transform: translateX(200px); opacity: 0; } }`}</style>
     </svg>
   );
 }
 
 export default function AboutBeybladeX() {
   return (
-    <section id="about" className="relative overflow-hidden bg-void py-24 sm:py-32">
+    <section id="about" className="section-divider relative overflow-hidden bg-void py-24 sm:py-32">
       <div className="speedlines absolute inset-0 opacity-70" />
       <div className="relative mx-auto max-w-[1600px] px-5 sm:px-10">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.15fr_1fr]">
@@ -182,14 +206,14 @@ export default function AboutBeybladeX() {
                 className="group relative pr-6"
               >
                 <div className="flex items-end gap-2">
-                  <span className="label text-cream/40">0{i + 1}</span>
+                  <span className="label text-cream/55">0{i + 1}</span>
                   <span className="headline ml-3 text-5xl text-cream">{s.word}</span>
                 </div>
                 <div className="mt-4 flex items-center">
                   <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                   {i < STEPS.length - 1 && <span className="ml-2 h-px flex-1 border-t border-dashed border-cream/20 max-lg:hidden" />}
                 </div>
-                <p className="mt-4 text-base leading-relaxed text-white/65">{s.text}</p>
+                <p className="mt-4 text-base leading-relaxed text-white/75">{s.text}</p>
               </motion.li>
             ))}
           </ol>
@@ -203,13 +227,13 @@ export default function AboutBeybladeX() {
             </h3>
             <div className="relative mt-8 overflow-hidden rounded-2xl bg-steel p-6 text-cream">
               <div className="halftone-dark absolute inset-0" />
-              <p className="label relative text-cream/50">Bit gear + rail teeth =</p>
+              <p className="label relative text-cream/65">Bit gear + rail teeth =</p>
               <p className="headline relative mt-2 text-5xl text-accent">Xtreme Dash</p>
               <div className="relative mt-2">
                 <GearDiagram />
               </div>
             </div>
-            <p className="mt-5 text-base leading-relaxed text-white/60">
+            <p className="mt-5 text-base leading-relaxed text-white/72">
               Every Beyblade X Bit has gear teeth near its tip. When a spinning top drifts to the edge, those teeth catch
               the rail like a cog on a track, and the top is flung forward.
             </p>
@@ -226,8 +250,8 @@ export default function AboutBeybladeX() {
               >
                 <span className="label pt-2 text-accent">({i + 1})</span>
                 <div>
-                  <h4 className="headline text-3xl text-cream/45 transition-colors duration-500 group-hover:text-cream sm:text-4xl">{f.title}</h4>
-                  <p className="mt-2 max-w-xl text-base leading-relaxed text-white/60">{f.text}</p>
+                  <h4 className="headline text-3xl text-cream/85 transition-colors duration-300 group-hover:text-accent sm:text-4xl">{f.title}</h4>
+                  <p className="mt-2 max-w-xl text-base leading-relaxed text-white/72">{f.text}</p>
                 </div>
               </motion.li>
             ))}

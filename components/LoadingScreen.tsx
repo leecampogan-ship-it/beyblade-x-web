@@ -3,26 +3,36 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
-/** Short branded intro loader shown on first paint; never blocks content for long. */
+const SEEN_KEY = "bx:intro-seen";
+/** Long enough for the intro rings to draw in, short enough not to hold up the page. */
+const INTRO_MS = 700;
+
+/**
+ * Short branded intro loader. It is server-rendered so the page never flashes before it,
+ * but it starts fading out as soon as the app hydrates (it no longer waits for every asset).
+ * It plays once per browser session and is skipped for users who prefer reduced motion.
+ */
 export default function LoadingScreen() {
   const [visible, setVisible] = useState(true);
+  const [fast, setFast] = useState(false);
   useEffect(() => {
-    const done = () => setTimeout(() => setVisible(false), 900);
-    if (document.readyState === "complete") {
-      const t = done();
-      return () => clearTimeout(t);
+    let seen = false;
+    try {
+      seen = sessionStorage.getItem(SEEN_KEY) === "1";
+      sessionStorage.setItem(SEEN_KEY, "1");
+    } catch {
+      // Storage can be blocked (private mode); just play the intro.
     }
-    let t: ReturnType<typeof setTimeout> | undefined;
-    const onLoad = () => {
-      t = done();
-    };
-    window.addEventListener("load", onLoad);
-    const failsafe = setTimeout(() => setVisible(false), 2500);
-    return () => {
-      window.removeEventListener("load", onLoad);
-      clearTimeout(failsafe);
-      if (t) clearTimeout(t);
-    };
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const skip = seen || reduced;
+    const t = setTimeout(
+      () => {
+        setFast(skip);
+        setVisible(false);
+      },
+      skip ? 0 : INTRO_MS,
+    );
+    return () => clearTimeout(t);
   }, []);
 
   return (
@@ -31,7 +41,7 @@ export default function LoadingScreen() {
         <motion.div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-void"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }}
+          exit={{ opacity: 0, transition: { duration: fast ? 0.2 : 0.6, ease: [0.16, 1, 0.3, 1] } }}
           role="status"
           aria-label="Loading"
           data-loader

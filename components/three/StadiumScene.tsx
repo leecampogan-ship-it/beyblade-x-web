@@ -7,6 +7,7 @@ import ProjectedLabels from "./ProjectedLabels";
 import * as THREE from "three";
 import BeybladeModel from "./BeybladeModel";
 import StudioLights from "./StudioLights";
+import AdaptiveQuality from "./AdaptiveQuality";
 import { PRODUCTS } from "@/lib/products";
 import { seededRandom } from "@/lib/random";
 
@@ -490,13 +491,14 @@ export default function StadiumScene({
     <Canvas
       resize={{ offsetSize: true }}
       frameloop={active ? "always" : "never"}
-      dpr={[1, 1.6]}
+      dpr={[1, 1.5]}
       camera={{ position: [0, 8.2, 8.2], fov: 44 }}
       gl={{ antialias: true, alpha: true }}
       aria-label="Animated 3D Beyblade X stadium battle demonstration"
       role="img"
     >
       <Suspense fallback={null}>
+        <AdaptiveQuality max={1.5} />
         <StudioLights intensity={0.9} />
         <group position={[0, SCENE_Y, 0]}>
           {/* Base plate */}

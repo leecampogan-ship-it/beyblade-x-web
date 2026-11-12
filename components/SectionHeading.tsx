@@ -41,7 +41,7 @@ export default function SectionHeading({
           {index && <span className="opacity-60">({index})</span>} {eyebrow}
         </p>
         <h2 className={cn("headline mt-5 text-[clamp(2.6rem,6.2vw,6rem)]", light ? "text-ink" : "text-cream")}>
-          <span className={light ? "text-ink/40" : "text-cream/40"}>{title}</span>
+          <span className={light ? "text-ink/40" : "text-cream/55"}>{title}</span>
           {accent && (
             <>
               <br />

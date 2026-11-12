@@ -17,3 +17,18 @@ export function smoothScrollTo(target: number | HTMLElement | null) {
   if (typeof target === "number") window.scrollTo({ top: target, behavior: "smooth" });
   else target.scrollIntoView({ behavior: "smooth" });
 }
+
+/**
+ * Locks page scrolling (for modals and overlays). Pauses Lenis too, because Lenis keeps
+ * scrolling the window even when the body has `overflow: hidden`. Returns an unlock function.
+ */
+export function lockScroll(): () => void {
+  const lenis = typeof window !== "undefined" ? window.__lenis : undefined;
+  const prev = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+  lenis?.stop();
+  return () => {
+    document.body.style.overflow = prev;
+    lenis?.start();
+  };
+}

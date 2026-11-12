@@ -1,15 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import Logo from "./Logo";
 import { SECTIONS, cn, type SectionId } from "@/lib/utils";
+import { lockScroll } from "@/lib/scroll";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<SectionId>("home");
   const [open, setOpen] = useState(false);
+  const unlockRef = useRef<(() => void) | null>(null);
+
+  // Menu links: unlock scrolling before Lenis handles the anchor click (it ignores scrollTo while stopped).
+  const closeMenu = () => {
+    unlockRef.current?.();
+    unlockRef.current = null;
+    setOpen(false);
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -34,11 +43,16 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    const unlock = lockScroll();
+    unlockRef.current = unlock;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = "";
+      if (unlockRef.current === unlock) {
+        unlock();
+        unlockRef.current = null;
+      }
       window.removeEventListener("keydown", onKey);
     };
   }, [open]);
@@ -51,7 +65,7 @@ export default function Navbar() {
       )}
     >
       <nav aria-label="Main" className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 sm:px-10">
-        <a href="#home" aria-label="Beyblade X — back to top" onClick={() => setOpen(false)}>
+        <a href="#home" aria-label="Beyblade X — back to top" onClick={closeMenu}>
           <Logo />
         </a>
 
@@ -104,14 +118,14 @@ export default function Navbar() {
                 >
                   <a
                     href={`#${s.id}`}
-                    onClick={() => setOpen(false)}
+                    onClick={closeMenu}
                     className={cn(
                       "headline flex items-center justify-between border-b border-dashed border-white/15 py-5 text-4xl",
                       active === s.id ? "text-accent" : "text-white",
                     )}
                   >
                     {s.label}
-                    <span className="label text-white/40">0{i + 1}</span>
+                    <span className="label text-white/55">0{i + 1}</span>
                   </a>
                 </motion.li>
               ))}

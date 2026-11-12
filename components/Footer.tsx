@@ -1,6 +1,16 @@
 import { ArrowUpRight } from "lucide-react";
 import { SECTIONS } from "@/lib/utils";
 
+const WORDMARK = {
+  x: 800,
+  y: 242,
+  textAnchor: "middle",
+  fontFamily: "var(--font-display)",
+  fontWeight: 800,
+  fontSize: 270,
+  letterSpacing: -8,
+} as const;
+
 /** Construction-line wordmark: the giant faded name with dotted guides and orange handles. */
 function ConstructionWordmark() {
   const handles = (x: number, y: number, w: number, h: number) =>
@@ -16,19 +26,24 @@ function ConstructionWordmark() {
     ].map(([hx, hy], i) => <rect key={i} x={hx - 4} y={hy - 4} width="8" height="8" fill="#c6f31a" />);
   return (
     <svg viewBox="0 0 1600 300" className="w-full" role="img" aria-label="Beyblade X">
-      <text
-        x="800"
-        y="242"
-        textAnchor="middle"
-        fontFamily="var(--font-display)"
-        fontWeight="800"
-        fontSize="270"
-        letterSpacing="-8"
-        fill="#f8f8f8"
-        fillOpacity="0.06"
-      >
+      <defs>
+        <clipPath id="wordmark-clip">
+          <text {...WORDMARK}>BEYBLADE X</text>
+        </clipPath>
+        <linearGradient id="wordmark-sweep" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#c6f31a" stopOpacity="0" />
+          <stop offset="0.5" stopColor="#c6f31a" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#c6f31a" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <text {...WORDMARK} fill="#f8f8f8" fillOpacity="0.1">
         BEYBLADE X
       </text>
+      {/* slow lime light sweep across the letters (skipped for reduced motion) */}
+      <g clipPath="url(#wordmark-clip)">
+        <rect x="-500" y="0" width="500" height="300" fill="url(#wordmark-sweep)" className="motion-safe:animate-[wordmark-sweep_7s_ease-in-out_infinite]" />
+      </g>
+      <style>{`@keyframes wordmark-sweep { 0% { transform: translateX(0); } 60%, 100% { transform: translateX(2100px); } }`}</style>
       {/* guides */}
       {[48, 152, 252].map((y) => (
         <line key={y} x1="0" y1={y} x2="1600" y2={y} stroke="#f8f8f8" strokeOpacity="0.12" strokeDasharray="3 7" />
@@ -52,7 +67,7 @@ export default function Footer() {
           <div>
             <p className="eyebrow">Thanks for scrolling</p>
             <p className="headline mt-5 text-[clamp(2.6rem,6vw,5.5rem)]">
-              <span className="text-cream/40">Now go</span>
+              <span className="text-cream/55">Now go</span>
               <br />
               let it rip.
             </p>
@@ -64,7 +79,7 @@ export default function Footer() {
             </a>
           </div>
           <nav aria-label="Footer">
-            <h2 className="label text-cream/40">Explore</h2>
+            <h2 className="label text-cream/55">Explore</h2>
             <ul className="mt-5 space-y-2">
               {SECTIONS.map((s) => (
                 <li key={s.id}>
@@ -76,7 +91,7 @@ export default function Footer() {
             </ul>
           </nav>
           <div>
-            <h2 className="label text-cream/40">Official website</h2>
+            <h2 className="label text-cream/55">Official website</h2>
             <a
               href="https://beyblade.com/"
               target="_blank"
@@ -85,7 +100,7 @@ export default function Footer() {
             >
               beyblade.com <ArrowUpRight size={18} />
             </a>
-            <p className="mt-2 text-sm text-cream/45">For official products, rules and events.</p>
+            <p className="mt-2 text-sm text-cream/60">For official products, rules and events.</p>
           </div>
         </div>
 
@@ -95,9 +110,9 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-dashed border-cream/15">
-        <div className="mx-auto max-w-[1600px] space-y-2 px-5 py-6 text-xs leading-relaxed text-cream/40 sm:px-10">
+        <div className="mx-auto max-w-[1600px] space-y-2 px-5 py-6 text-xs leading-relaxed text-cream/55 sm:px-10">
           <p>
-            <strong className="text-cream/60">Disclaimer:</strong> This website is an independent educational fan project.
+            <strong className="text-cream/72">Disclaimer:</strong> This website is an independent educational fan project.
             It is not affiliated with, sponsored by or endorsed by Takara Tomy, Hasbro or any of their affiliates.
           </p>
           <p>

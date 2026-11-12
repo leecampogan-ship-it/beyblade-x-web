@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import GenerationArt from "./GenerationArt";
 import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import SectionHeading from "./SectionHeading";
@@ -16,9 +16,13 @@ export default function History() {
     const el = track.current;
     if (!el) return;
     const clamped = Math.max(0, Math.min(GENERATIONS.length - 1, i));
-    const panel = el.children[clamped] as HTMLElement | undefined;
+    const panel = el.querySelectorAll<HTMLElement>("article")[clamped];
     setIndex(clamped);
-    if (panel) el.scrollTo({ left: panel.offsetLeft - el.offsetLeft, behavior: "smooth" });
+    if (!panel) return;
+    // Centre the card, matching the track's snap-center; aligning its left edge instead made the browser
+    // re-snap to the neighbouring card (so "Burst" could never be shown).
+    const left = el.scrollLeft + panel.getBoundingClientRect().left - el.getBoundingClientRect().left - (el.clientWidth - panel.offsetWidth) / 2;
+    el.scrollTo({ left: Math.max(0, Math.min(left, el.scrollWidth - el.clientWidth)), behavior: "smooth" });
   }, []);
 
   // Sync active index with manual scrolling / swiping
@@ -29,13 +33,14 @@ export default function History() {
     const onScroll = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const children = Array.from(el.children) as HTMLElement[];
-        const center = el.scrollLeft + el.clientWidth / 2;
+        const cards = Array.from(el.querySelectorAll<HTMLElement>("article"));
+        const box = el.getBoundingClientRect();
+        const center = box.left + box.width / 2;
         let best = 0;
         let bestDist = Infinity;
-        children.forEach((c, i) => {
-          const mid = c.offsetLeft - el.offsetLeft + c.clientWidth / 2;
-          const d = Math.abs(mid - center);
+        cards.forEach((c, i) => {
+          const r = c.getBoundingClientRect();
+          const d = Math.abs(r.left + r.width / 2 - center);
           if (d < bestDist) {
             bestDist = d;
             best = i;
@@ -64,7 +69,7 @@ export default function History() {
   const current = GENERATIONS[index];
 
   return (
-    <section id="history" className="relative overflow-hidden bg-void py-28 sm:py-40">
+    <section id="history" className="section-divider relative overflow-hidden bg-void py-24 sm:py-32">
       <div
         className="pointer-events-none absolute inset-0 opacity-30 transition-colors duration-700"
         style={{ background: `radial-gradient(ellipse at 80% 20%, ${current.color}33, transparent 60%)` }}
@@ -123,7 +128,7 @@ export default function History() {
                 <span
                   className={cn(
                     "label grid h-9 w-9 place-items-center rounded-full border transition-colors",
-                    i <= index ? "border-accent bg-accent text-ink" : "border-cream/25 bg-void text-cream/50",
+                    i <= index ? "border-accent bg-accent text-ink" : "border-cream/25 bg-void text-cream/65",
                   )}
                 >
                   {g.index}
@@ -131,12 +136,12 @@ export default function History() {
                 <span
                   className={cn(
                     "label mt-4 hidden sm:block",
-                    index === i ? "text-cream" : "text-cream/40 group-hover:text-cream/70",
+                    index === i ? "text-cream" : "text-cream/55 group-hover:text-cream/70",
                   )}
                 >
                   {g.name}
                 </span>
-                <span className="mt-1 hidden text-xs text-white/35 sm:block">{g.era}</span>
+                <span className="mt-1 hidden text-xs text-white/55 sm:block">{g.era}</span>
               </button>
             ))}
           </div>
@@ -149,7 +154,7 @@ export default function History() {
         tabIndex={0}
         onKeyDown={onKeyDown}
         aria-label="Generation details — use left and right arrow keys to navigate"
-        className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-4 pb-6 sm:px-6 lg:px-[max(2.5rem,calc((100vw-100rem)/2+2.5rem))]"
+        className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-[6vw] pb-6 md:px-[calc((100%-min(78vw,64rem))/2)]"
       >
         {GENERATIONS.map((g, i) => (
           <article
@@ -165,14 +170,9 @@ export default function History() {
             )}
           >
             <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[440px]">
-              <Image
-                src={g.image}
-                alt={g.imageAlt}
-                fill
-                unoptimized
-                sizes="(max-width: 768px) 88vw, 40vw"
-                className={cn("object-cover transition-transform duration-[1.2s]", index === i ? "scale-100" : "scale-110")}
-              />
+              <div className={cn("absolute inset-0 transition-transform duration-[1.2s]", index === i ? "scale-100" : "scale-110")}>
+                <GenerationArt id={g.id} color={g.color} photo={g.photo} label={`${g.era}: ${g.imageAlt}`} />
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-steel via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-steel/90" />
               <span
                 className="label absolute left-5 top-5 rounded-full bg-void/70 px-3 py-1.5"
@@ -194,10 +194,10 @@ export default function History() {
               <h3 className="headline mt-4 text-4xl text-cream sm:text-5xl">
                 {g.name}
               </h3>
-              <p className="mt-1 text-sm text-white/50">{g.tagline}</p>
+              <p className="mt-1 text-sm text-white/65">{g.tagline}</p>
               <p className="mt-5 text-base leading-relaxed text-cream/70">{g.description}</p>
 
-              <h4 className="label mt-7 text-cream/45">Key innovations</h4>
+              <h4 className="label mt-7 text-cream/60">Key innovations</h4>
               <ul className="mt-3 space-y-2">
                 {g.innovations.map((item) => (
                   <li key={item} className="flex gap-3 text-sm text-white/80">
@@ -209,7 +209,7 @@ export default function History() {
 
               <div className="mt-6 flex flex-wrap gap-2">
                 {g.series.map((s) => (
-                  <span key={s} className="label rounded-full border border-cream/15 px-3 py-1.5 text-cream/60">
+                  <span key={s} className="label rounded-full border border-cream/15 px-3 py-1.5 text-cream/72">
                     {s}
                   </span>
                 ))}
@@ -217,9 +217,8 @@ export default function History() {
             </div>
           </article>
         ))}
-        <div className="w-1 shrink-0" aria-hidden />
       </div>
-      <p className="mx-auto mt-2 max-w-[1600px] px-5 text-xs text-white/35 sm:px-10">
+      <p className="mx-auto mt-2 max-w-[1600px] px-5 text-xs text-white/55 sm:px-10">
         Years refer to the original Japanese releases by Takara Tomy; international releases often followed later.
       </p>
     </section>

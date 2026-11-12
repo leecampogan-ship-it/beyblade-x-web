@@ -1,19 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "motion/react";
 import { Pause, Play, RotateCcw, Cog, Gauge, Navigation, Target } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import SceneShell from "./three/SceneShell";
-import SceneLoader from "./three/SceneLoader";
 import type { BattlePhase, FinishId } from "./three/StadiumScene";
-import { cn } from "@/lib/utils";
+import { cn, hasWebGL } from "@/lib/utils";
+
+const noop = () => () => {};
 
 const StadiumScene = dynamic(() => import("./three/StadiumScene"), {
   ssr: false,
-  loading: () => <SceneLoader label="Building stadium" />,
+  loading: () => null,
 });
+
+/** Shown until the 3D battle starts (download + scene start-up): the stadium diagram, faint and pulsing, instead of an empty panel. */
+function StadiumPlaceholder() {
+  return (
+    <div className="flex h-full items-center justify-center p-8" role="status" aria-label="Loading 3D stadium">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/stadium/xtreme-stadium-diagram.svg" alt="" className="max-h-[78%] animate-pulse opacity-30" />
+    </div>
+  );
+}
 
 const FINISHES: { id: FinishId; name: string; points: number; color: string; text: string }[] = [
   {
@@ -82,6 +93,7 @@ export default function Stadium() {
   const [playId, setPlayId] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [phase, setPhase] = useState<BattlePhase | null>(null);
+  const webgl = useSyncExternalStore(noop, hasWebGL, () => true);
   const current = FINISHES.find((f) => f.id === finish)!;
 
   const choose = (id: FinishId) => {
@@ -93,7 +105,7 @@ export default function Stadium() {
   const caption = !phase ? "" : phase === "finish" ? `${current.name.toUpperCase()} · +${current.points}` : PHASE_TEXT[phase];
 
   return (
-    <section id="stadium" className="relative overflow-hidden bg-void py-28 sm:py-40">
+    <section id="stadium" className="section-divider relative overflow-hidden bg-void py-24 sm:py-32">
             <div className="relative mx-auto max-w-[1600px] px-5 sm:px-10">
         <SectionHeading
             index="05"
@@ -106,12 +118,19 @@ export default function Stadium() {
         <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-[1.5fr_1fr]">
           <div className="relative overflow-hidden rounded-2xl bg-steel">
             <div className="relative h-[380px] sm:h-[520px]">
+              <AnimatePresence>
+                {webgl && !phase && (
+                  <motion.div key="placeholder" exit={{ opacity: 0 }} transition={{ duration: 0.6 }} className="absolute inset-0">
+                    <StadiumPlaceholder />
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <SceneShell
                 fallback={
                   <div className="flex h-full flex-col items-center justify-center p-6 text-center">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/stadium/xtreme-stadium-diagram.svg" alt="Diagram of the Xtreme Stadium showing the X-Celerator Rail, Xtreme Zone and Over Zones" className="max-h-[80%]" />
-                    <p className="mt-3 text-xs text-white/50">3D demo unavailable — showing stadium diagram.</p>
+                    <p className="mt-3 text-xs text-white/65">3D demo unavailable — showing stadium diagram.</p>
                   </div>
                 }
               >
@@ -179,11 +198,17 @@ export default function Stadium() {
                   onClick={() => choose(f.id)}
                   className={cn(
                     "group relative grid grid-cols-[4.5rem_1fr] items-start gap-3 rounded-2xl border p-4 text-left transition-colors duration-500",
-                    on ? "bg-steel text-cream" : "border-cream/10 text-cream hover:border-cream/30",
+                    on
+                      ? "border-accent/70 bg-steel text-cream shadow-[0_0_32px_-8px_rgba(198,243,26,0.45)]"
+                      : "border-cream/10 text-cream hover:border-cream/30",
                   )}
-                  style={on ? { borderColor: f.color } : undefined}
                 >
-                  <span className="headline text-center text-6xl leading-[0.8]" style={{ color: f.color, opacity: on ? 1 : 0.6 }}>
+                  <span
+                    className={cn(
+                      "headline text-center text-6xl leading-[0.8] transition-colors duration-500",
+                      on ? "neon" : "text-cream/40 group-hover:text-cream/70",
+                    )}
+                  >
                     {f.points}
                     <span className="label mt-2 block">pt{f.points > 1 ? "s" : ""}</span>
                   </span>
@@ -192,7 +217,7 @@ export default function Stadium() {
                       {f.name}
                       {on && <Play size={16} fill="currentColor" />}
                     </span>
-                    <span className={cn("mt-1.5 block text-sm leading-snug", on ? "text-cream/75" : "text-cream/50")}>{f.text}</span>
+                    <span className={cn("mt-1.5 block text-sm leading-snug", on ? "text-cream/75" : "text-cream/65")}>{f.text}</span>
                   </span>
                 </button>
               );
@@ -213,11 +238,11 @@ export default function Stadium() {
               <h3 className="headline flex items-center gap-2 text-2xl text-cream">
                 <m.icon className="text-accent" size={18} /> {m.title}
               </h3>
-              <p className="mt-3 text-base leading-relaxed text-white/60">{m.text}</p>
+              <p className="mt-3 text-base leading-relaxed text-white/72">{m.text}</p>
             </motion.li>
           ))}
         </ul>
-        <p className="mt-10 text-sm text-white/40">
+        <p className="mt-10 text-sm text-white/55">
           Points shown follow the standard Beyblade X scoring (Xtreme 3, Over 2, Burst 2, Spin 1). Tournament formats may
           vary — always check the official rules for your event. The animation is a simplified demonstration, not a
           physics simulation.

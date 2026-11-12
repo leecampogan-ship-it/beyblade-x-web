@@ -6,6 +6,7 @@ import { ContactShadows, OrbitControls } from "@react-three/drei";
 import type * as THREE from "three";
 import BeybladeModel, { type PartId } from "./BeybladeModel";
 import StudioLights from "./StudioLights";
+import AdaptiveQuality from "./AdaptiveQuality";
 import ProjectedLabels from "./ProjectedLabels";
 import type { BeyVisual } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -36,7 +37,7 @@ export default function ExplodedView({ active, visual, exploded, selected, onSel
       <Canvas
         resize={{ offsetSize: true }}
         frameloop={active ? "always" : "never"}
-        dpr={[1, 1.75]}
+        dpr={[1, 1.5]}
         camera={{ position: [0, 8.2, 7.4], fov: 36 }}
         gl={{ antialias: true, alpha: true }}
         onPointerMissed={() => onSelect(null)}
@@ -44,6 +45,7 @@ export default function ExplodedView({ active, visual, exploded, selected, onSel
         role="img"
       >
         <Suspense fallback={null}>
+          <AdaptiveQuality max={1.5} />
           <StudioLights />
           <group scale={1.1} position={[0, -0.55, 0]}>
             <BeybladeModel
@@ -58,7 +60,7 @@ export default function ExplodedView({ active, visual, exploded, selected, onSel
               }}
             />
           </group>
-          <ContactShadows position={[0, -1.7, 0]} opacity={0.55} scale={8} blur={2.6} far={4} resolution={512} />
+          <ContactShadows position={[0, -1.7, 0]} opacity={0.55} scale={8} blur={2.6} far={4} resolution={256} />
           <OrbitControls
             enableZoom={false}
             enablePan={false}

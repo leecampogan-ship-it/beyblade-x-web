@@ -55,7 +55,7 @@ export default function Collection() {
   ];
 
   return (
-    <section id="collection" className="relative overflow-hidden bg-void py-28 sm:py-40">
+    <section id="collection" className="section-divider relative overflow-hidden bg-void py-24 sm:py-32">
       <div className="relative mx-auto max-w-[1600px] px-5 sm:px-10">
         <SectionHeading
             index="06"
@@ -87,20 +87,20 @@ export default function Collection() {
           </div>
           <label className="relative block w-full lg:w-80">
             <span className="sr-only">Search Beyblades</span>
-            <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-cream/50" />
+            <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-cream/65" />
             <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search name, ratchet or bit…"
-              className="w-full rounded-full border border-cream/20 bg-transparent py-3 pl-11 pr-10 text-sm text-cream placeholder:text-cream/40 focus:border-cream/60 focus:outline-none"
+              className="w-full rounded-full border border-cream/20 bg-transparent py-3 pl-11 pr-10 text-sm text-cream placeholder:text-cream/55 focus:border-cream/60 focus:outline-none"
             />
             {query && (
               <button
                 type="button"
                 onClick={() => setQuery("")}
                 aria-label="Clear search"
-                className="absolute right-3 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center text-cream/50 hover:text-cream"
+                className="absolute right-3 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center text-cream/65 hover:text-cream"
               >
                 <X size={14} />
               </button>
@@ -108,11 +108,11 @@ export default function Collection() {
           </label>
         </div>
 
-        <p className="label mt-6 text-cream/45" aria-live="polite">
+        <p className="label mt-6 text-cream/60" aria-live="polite">
           Showing {results.length} of {PRODUCTS.length} Beyblades
         </p>
 
-        <ul className="mt-6 grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <ul className="mt-6 grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout">
             {results.map((p) => (
               <ProductCard key={p.id} product={p} onOpen={setOpen} />
@@ -136,7 +136,7 @@ export default function Collection() {
           </div>
         )}
 
-        <p className="mt-14 max-w-3xl text-sm leading-relaxed text-cream/45">
+        <p className="mt-14 max-w-3xl text-sm leading-relaxed text-cream/60">
           Names and configurations follow the Hasbro (English-language) releases; Takara Tomy equivalents are listed
           where known. Product availability differs by region — check{" "}
           <a href="https://beyblade.com/" target="_blank" rel="noopener noreferrer" className="dotted-underline text-cream">

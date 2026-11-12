@@ -113,7 +113,7 @@ export default function BeybladeTypes() {
     setCompare((c) => (c.includes(id) ? c.filter((x) => x !== id) : [...c, id]));
 
   return (
-    <section id="types" className="relative overflow-hidden bg-void py-24 sm:py-32">
+    <section id="types" className="section-divider relative overflow-hidden bg-void py-24 sm:py-32">
             <div className="relative mx-auto max-w-[1600px] px-5 sm:px-10">
         <SectionHeading
           index="04"
@@ -141,11 +141,11 @@ export default function BeybladeTypes() {
                   isActive ? "border-cream/30 bg-steel" : "border-cream/10 hover:border-cream/25",
                 )}
               >
-                <span className="label flex items-center gap-2 text-cream/60">
+                <span className="label flex items-center gap-2 text-cream/72">
                   <span className="h-1.5 w-1.5 rounded-full" style={{ background: t.color }} />
                   {t.tagline}
                 </span>
-                <span className={cn("headline mt-3 block text-3xl sm:text-4xl", isActive ? "text-cream" : "text-cream/35 group-hover:text-cream/70")}>
+                <span className={cn("headline mt-3 block text-3xl sm:text-4xl", isActive ? "text-cream" : "text-cream/55 group-hover:text-cream/70")}>
                   {t.name}
                 </span>
               </button>
@@ -233,7 +233,7 @@ export default function BeybladeTypes() {
                 <ol className="mt-3 space-y-2">
                   {active.strategy.map((s, i) => (
                     <li key={s} className="flex gap-3 text-base text-cream/85">
-                      <span className="font-display text-base font-semibold text-cream/40">
+                      <span className="font-display text-base font-semibold text-cream/55">
                         {i + 1}
                       </span>
                       {s}
@@ -242,7 +242,7 @@ export default function BeybladeTypes() {
                 </ol>
               </div>
               <div>
-                <h3 className="label text-cream/45">Real examples</h3>
+                <h3 className="label text-cream/60">Real examples</h3>
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   {examples.map((p) => (
                     <span key={p.id} className="flex items-center gap-2 rounded-full bg-steel py-1.5 pl-1.5 pr-4">
@@ -271,7 +271,7 @@ export default function BeybladeTypes() {
             <h3 className="headline text-5xl text-white sm:text-6xl">
               Compare <span className="text-accent">types</span>
             </h3>
-            <p className="mt-3 text-sm text-white/60">
+            <p className="mt-3 text-sm text-white/72">
               Toggle types to overlay their profiles. Values are an illustrative guide to each type&apos;s tendencies —
               not official statistics. Real performance depends on the exact parts used.
             </p>
@@ -286,7 +286,7 @@ export default function BeybladeTypes() {
                     onClick={() => toggleCompare(t.id)}
                     className={cn(
                       "inline-flex items-center gap-2 border px-4 py-2 font-display text-sm font-bold tracking-wider transition",
-                      on ? "text-white" : "border-white/15 text-white/50 hover:text-white",
+                      on ? "text-white" : "border-white/15 text-white/65 hover:text-white",
                     )}
                     style={on ? { borderColor: t.color, background: `${t.color}22` } : undefined}
                   >
@@ -302,7 +302,7 @@ export default function BeybladeTypes() {
               <table className="w-full min-w-[420px] text-left text-sm">
                 <caption className="sr-only">Illustrative stat comparison of selected types</caption>
                 <thead>
-                  <tr className="text-[10px] uppercase tracking-wider text-white/40">
+                  <tr className="text-xs uppercase tracking-wider text-white/55">
                     <th className="py-2 font-normal">Stat</th>
                     {compareTypes.map((t) => (
                       <th key={t.id} className="py-2 font-display font-bold" style={{ color: t.color }}>
@@ -314,7 +314,7 @@ export default function BeybladeTypes() {
                 <tbody>
                   {STAT_KEYS.map((s) => (
                     <tr key={s.key} className="border-t border-white/5">
-                      <th scope="row" className="py-2 font-normal text-white/60">
+                      <th scope="row" className="py-2 font-normal text-white/72">
                         {s.label}
                       </th>
                       {compareTypes.map((t) => (
@@ -335,9 +335,9 @@ export default function BeybladeTypes() {
                   ))}
                 </tbody>
               </table>
-              {compareTypes.length === 0 && <p className="mt-2 text-sm text-white/40">Select at least one type to compare.</p>}
+              {compareTypes.length === 0 && <p className="mt-2 text-sm text-white/55">Select at least one type to compare.</p>}
             </div>
-            <p className="mt-6 text-sm text-white/55">
+            <p className="mt-6 text-sm text-white/70">
               <strong className="text-white">Classic matchups:</strong> Attack tends to beat Stamina, Stamina tends to
               outlast Defense, and Defense tends to stop Attack — while Balance can adapt to any of them.
             </p>

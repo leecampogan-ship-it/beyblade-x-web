@@ -178,8 +178,10 @@ export default function PartsBreakdown() {
     bit: `${product.bit} (${product.bitCode}) — ${BIT_GLOSSARY[product.bitCode]?.summary ?? ""}`,
   };
 
+  // overflow-anchor: none on the section: the info panel's height changes with each part, and the browser's
+  // scroll anchoring would otherwise shift the whole page (and the sticky 3D viewer) on every part switch.
   return (
-    <section id="parts" className="relative overflow-hidden bg-charcoal py-24 sm:py-32">
+    <section id="parts" className="section-divider relative overflow-hidden bg-charcoal py-24 [overflow-anchor:none] sm:py-32">
       <span aria-hidden className="headline text-outline pointer-events-none absolute -left-6 bottom-10 select-none text-[24vw] text-white/[0.04]">
         B·R·B
       </span>
@@ -224,7 +226,7 @@ export default function PartsBreakdown() {
                   <Split size={16} /> Separate
                 </button>
               </div>
-              <label className="flex items-center gap-2 text-xs text-white/50">
+              <label className="flex items-center gap-2 text-xs text-white/65">
                 <span className="sr-only sm:not-sr-only">Model</span>
                 <select
                   value={productId}
@@ -257,7 +259,7 @@ export default function PartsBreakdown() {
                         </button>
                       ))}
                     </div>
-                    <p className="text-center text-xs text-white/50">3D view unavailable — showing part illustrations.</p>
+                    <p className="text-center text-xs text-white/65">3D view unavailable — showing part illustrations.</p>
                   </div>
                 }
               >
@@ -271,7 +273,7 @@ export default function PartsBreakdown() {
                   />
                 )}
               </SceneShell>
-              <p className="label pointer-events-none absolute bottom-4 left-4 flex items-center gap-2 text-cream/45">
+              <p className="label pointer-events-none absolute bottom-4 left-4 flex items-center gap-2 text-cream/60">
                 <MousePointerClick size={14} /> Click a part · drag to rotate
               </p>
             </div>
@@ -287,7 +289,7 @@ export default function PartsBreakdown() {
                   onClick={() => select(p.id)}
                   className={cn(
                     "label relative py-4 transition-colors",
-                    selected === p.id ? "text-accent" : "text-cream/50 hover:text-cream",
+                    selected === p.id ? "text-accent" : "text-cream/65 hover:text-cream",
                   )}
                 >
                   {p.name}
@@ -317,9 +319,9 @@ export default function PartsBreakdown() {
                     <PartIcon part={info.id} product={product} />
                   </div>
                   <div>
-                    <p className="label text-cream/50">{info.position}</p>
+                    <p className="label text-cream/65">{info.position}</p>
                     <h3 className="headline mt-1 text-6xl text-cream">{info.name}</h3>
-                    <p className="mt-2 text-sm text-cream/50">
+                    <p className="mt-2 text-sm text-cream/65">
                       on {product.name} {product.config}
                     </p>
                   </div>
@@ -332,7 +334,7 @@ export default function PartsBreakdown() {
                   {info.points.map((pt) => (
                     <div key={pt.title}>
                       <dt className="label text-cream">{pt.title}</dt>
-                      <dd className="mt-1.5 text-base leading-relaxed text-cream/60">{pt.text}</dd>
+                      <dd className="mt-1.5 text-base leading-relaxed text-cream/72">{pt.text}</dd>
                     </div>
                   ))}
                 </dl>

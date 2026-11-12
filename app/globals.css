@@ -97,7 +97,7 @@ body {
 /* Tiny uppercase UI label */
 @utility label {
   font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -212,5 +212,27 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Thin lime-tinted rule at the top of each section, so the long black page reads as distinct chapters */
+@utility section-divider {
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(1520px, calc(100% - 2.5rem));
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(248, 248, 248, 0.14) 20%,
+      rgba(198, 243, 26, 0.55) 50%,
+      rgba(248, 248, 248, 0.14) 80%,
+      transparent
+    );
+    pointer-events: none;
   }
 }

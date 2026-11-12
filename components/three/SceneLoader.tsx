@@ -7,7 +7,7 @@ export default function SceneLoader({ label = "Loading 3D" }: { label?: string }
           <div className="absolute inset-2 animate-[spin_0.8s_linear_infinite_reverse] rounded-full border-2 border-crimson/20 border-b-crimson" />
           <div className="absolute inset-[26px] rounded-full bg-chrome shadow-[0_0_12px_rgba(255,255,255,0.6)]" />
         </div>
-        <span className="font-display text-xs tracking-wider text-white/60 uppercase">{label}</span>
+        <span className="font-display text-xs tracking-wider text-white/72 uppercase">{label}</span>
       </div>
     </div>
   );

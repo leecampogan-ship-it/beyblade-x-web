@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Outfit } from "next/font/google";
 import SmoothScroll from "@/components/SmoothScroll";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -17,21 +18,16 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-// Resolves absolute URLs for social images. Set NEXT_PUBLIC_SITE_URL for a custom domain;
-// on Vercel the production URL is detected automatically.
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : undefined);
-
 const title = "BEYBLADE X — Accelerate Your Game | Interactive 3D Fan Experience";
 const description =
   "An immersive, interactive 3D guide to Beyblade X: explore the history of Beyblade, break down the Blade, Ratchet and Bit, learn the four performance types, watch the X-Celerator Rail in action and browse the collection.";
 
 export const metadata: Metadata = {
-  ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
+  metadataBase: new URL(SITE_URL),
   title,
   description,
-  applicationName: "Beyblade X Experience",
+  applicationName: SITE_NAME,
+  alternates: { canonical: "/" },
   keywords: [
     "Beyblade X",
     "Beyblade",

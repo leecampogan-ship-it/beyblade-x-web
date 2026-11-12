@@ -6,7 +6,6 @@ import { motion, useScroll, useTransform, type MotionValue } from "motion/react"
 import { ChevronDown } from "lucide-react";
 import type * as THREE from "three";
 import SceneShell from "./three/SceneShell";
-import SceneLoader from "./three/SceneLoader";
 import BeyIllustration from "./BeyIllustration";
 import type { PartId } from "./three/BeybladeModel";
 import { PRODUCTS } from "@/lib/products";
@@ -15,10 +14,21 @@ import { cn } from "@/lib/utils";
 
 const StoryScene = dynamic(() => import("./three/StoryScene"), {
   ssr: false,
-  loading: () => <SceneLoader label="Loading Sword Dran" />,
+  loading: () => <HeroPlaceholder />,
 });
 
 const HERO = PRODUCTS[0];
+
+/** Shown while the 3D scene downloads: a faint, slowly pulsing Sword Dran instead of a spinner. */
+function HeroPlaceholder() {
+  return (
+    <div className="flex h-full items-center justify-center" role="status" aria-label="Loading 3D Sword Dran">
+      <div className="w-[30vmin] animate-pulse opacity-35">
+        <BeyIllustration visual={HERO.visual} />
+      </div>
+    </div>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* Workbench: warm desk + cutting mat with ruler markings (all vector) */
@@ -83,7 +93,7 @@ function DeskProps() {
   return (
     <svg viewBox="0 0 1600 900" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice" aria-hidden>
       {/* ripcord */}
-      <g transform="translate(1180 120) rotate(32)" opacity="0.95">
+      <g transform="translate(1130 790) rotate(-16)" opacity="0.95">
         <rect x="0" y="0" width="420" height="34" rx="6" fill="#1b1b1f" />
         {Array.from({ length: 26 }).map((_, i) => (
           <rect key={i} x={14 + i * 15} y="6" width="7" height="22" fill="#33333a" />
@@ -216,9 +226,9 @@ export default function StoryHero() {
         <motion.p
           aria-hidden
           style={{ x: ripX, opacity: s4 }}
-          className="headline pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 whitespace-nowrap text-[30vw] text-cream"
+          className="headline pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 whitespace-nowrap text-[30vw] text-cream/55 [-webkit-text-fill-color:transparent] [-webkit-text-stroke:2px_currentColor]"
         >
-          Let it rip.
+          Let it <span className="text-accent/80">rip.</span>
         </motion.p>
 
         {/* ---------- 3D ---------- */}
@@ -300,7 +310,7 @@ export default function StoryHero() {
         {/* ---------- Stage 2: isn't just a top ---------- */}
         <motion.div style={{ opacity: s2 }} className="pointer-events-none absolute inset-0 mx-auto max-w-[1600px] px-5 sm:px-10">
           <h2 className="headline absolute left-5 top-[22%] text-[clamp(2.4rem,4.4vw,4.6rem)] sm:left-10 lg:top-[42%]">
-            <span className="text-cream/45">Isn&apos;t just</span>
+            <span className="text-cream/60">Isn&apos;t just</span>
             <br />a spinning top.
           </h2>
           <ScrollWords
@@ -310,9 +320,24 @@ export default function StoryHero() {
             end={0.38}
             className="absolute bottom-24 right-5 max-w-[22rem] font-display text-[clamp(1.15rem,1.7vw,1.7rem)] font-medium leading-snug sm:right-10 lg:bottom-auto lg:top-[42%]"
           />
+          <dl className="absolute bottom-8 left-5 hidden gap-10 sm:left-10 lg:flex">
+            {[
+              ["1999", "First Beyblade"],
+              ["4", "Generations"],
+              ["3", "Parts per Bey"],
+            ].map(([n, l]) => (
+              <div key={l}>
+                <dt className="label text-cream/65">{l}</dt>
+                <dd className="headline mt-2 text-5xl text-cream">
+                  {n}
+                  <span className="text-accent">.</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
           <div className="absolute bottom-8 right-5 text-right sm:right-10">
             <div className="dotted-underline ml-auto w-16" />
-            <p className="label mt-2 text-cream/50">
+            <p className="label mt-2 text-cream/65">
               * Since the first
               <br />
               Beyblade in 1999
@@ -323,7 +348,7 @@ export default function StoryHero() {
         {/* ---------- Stage 3: three parts ---------- */}
         <motion.div style={{ opacity: s3 }} className="pointer-events-none absolute inset-0 mx-auto max-w-[1600px] px-5 sm:px-10">
           <h2 className="headline absolute left-5 top-[18%] text-[clamp(2.4rem,4.4vw,4.6rem)] sm:left-10 lg:top-[40%]">
-            <span className="text-cream/45">Three parts.</span>
+            <span className="text-cream/60">Three parts.</span>
             <br />
             One machine.
           </h2>
@@ -339,7 +364,7 @@ export default function StoryHero() {
         {/* ---------- Stage 4: let it rip ---------- */}
         <motion.div style={{ opacity: s4 }} className="pointer-events-none absolute inset-0 mx-auto max-w-[1600px] px-5 sm:px-10">
           <p className="headline absolute left-5 top-[16%] text-[clamp(1.6rem,2.4vw,2.6rem)] sm:left-10">
-            <span className="text-cream/50">So fast,</span>
+            <span className="text-cream/65">So fast,</span>
             <br />
             it&apos;s a blur.
           </p>

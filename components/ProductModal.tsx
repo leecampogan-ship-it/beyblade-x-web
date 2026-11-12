@@ -13,6 +13,10 @@ import { BIT_GLOSSARY } from "@/lib/products";
 import { TYPE_BY_ID } from "@/lib/beyTypes";
 import { usePrefersReducedMotion } from "@/lib/useReducedMotion";
 import { cn } from "@/lib/utils";
+import { lockScroll } from "@/lib/scroll";
+
+const FOCUSABLE =
+  "button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
 
 const MiniBeyScene = dynamic(() => import("./three/MiniBeyScene"), {
   ssr: false,
@@ -30,11 +34,15 @@ export default function ProductModal({ product, onClose }: { product: Product; o
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
     closeRef.current?.focus();
-    document.body.style.overflow = "hidden";
+    const unlock = lockScroll();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
       if (e.key === "Tab" && dialogRef.current) {
-        const focusables = dialogRef.current.querySelectorAll<HTMLElement>("button, [href], [tabindex]:not([tabindex='-1'])");
+        // Only elements that are actually visible (the view buttons change with the product).
+        const focusables = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+          (el) => el.getClientRects().length > 0,
+        );
+        if (focusables.length === 0) return;
         const first = focusables[0];
         const last = focusables[focusables.length - 1];
         if (e.shiftKey && document.activeElement === first) {
@@ -49,7 +57,7 @@ export default function ProductModal({ product, onClose }: { product: Product; o
     window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      unlock();
       prev?.focus();
     };
   }, [onClose]);
@@ -77,6 +85,7 @@ export default function ProductModal({ product, onClose }: { product: Product; o
         role="dialog"
         aria-modal="true"
         aria-labelledby="product-title"
+        data-lenis-prevent
         initial={{ y: 60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 40, opacity: 0 }}
@@ -140,7 +149,7 @@ export default function ProductModal({ product, onClose }: { product: Product; o
               type="button"
               onClick={() => setView("3d")}
               aria-pressed={view === "3d"}
-              className={cn("label inline-flex items-center gap-1.5 rounded-full border px-3 py-2", view === "3d" ? "border-accent bg-accent text-ink" : "border-white/20 bg-black/50 text-white/60")}
+              className={cn("label inline-flex items-center gap-1.5 rounded-full border px-3 py-2", view === "3d" ? "border-accent bg-accent text-ink" : "border-white/20 bg-black/50 text-white/72")}
             >
               <Box size={12} /> 3D
             </button>
@@ -148,7 +157,7 @@ export default function ProductModal({ product, onClose }: { product: Product; o
               type="button"
               onClick={() => setView("image")}
               aria-pressed={view === "image"}
-              className={cn("label inline-flex items-center gap-1.5 rounded-full border px-3 py-2", view === "image" ? "border-accent bg-accent text-ink" : "border-white/20 bg-black/50 text-white/60")}
+              className={cn("label inline-flex items-center gap-1.5 rounded-full border px-3 py-2", view === "image" ? "border-accent bg-accent text-ink" : "border-white/20 bg-black/50 text-white/72")}
             >
               <ImageIcon size={12} /> PHOTO
             </button>
@@ -157,7 +166,7 @@ export default function ProductModal({ product, onClose }: { product: Product; o
                 type="button"
                 onClick={() => setView("box")}
                 aria-pressed={view === "box"}
-                className={cn("label inline-flex items-center gap-1.5 rounded-full border px-3 py-2", view === "box" ? "border-accent bg-accent text-ink" : "border-white/20 bg-black/50 text-white/60")}
+                className={cn("label inline-flex items-center gap-1.5 rounded-full border px-3 py-2", view === "box" ? "border-accent bg-accent text-ink" : "border-white/20 bg-black/50 text-white/72")}
               >
                 <Package size={12} /> BOX
               </button>
@@ -189,15 +198,15 @@ export default function ProductModal({ product, onClose }: { product: Product; o
           <dl className="mt-6 divide-y divide-white/10 border-y border-white/10">
             {specs.map(([k, v]) => (
               <div key={k} className="grid grid-cols-[120px_1fr] gap-3 py-2.5 text-sm">
-                <dt className="text-[11px] uppercase tracking-[0.15em] text-white/45">{k}</dt>
+                <dt className="text-xs uppercase tracking-[0.15em] text-white/60">{k}</dt>
                 <dd className="text-white/85">{v}</dd>
               </div>
             ))}
           </dl>
-          <p className="mt-4 text-xs leading-relaxed text-white/50">
+          <p className="mt-4 text-xs leading-relaxed text-white/65">
             <strong className="text-white/70">About the {product.bit} bit:</strong> {BIT_GLOSSARY[product.bitCode]?.summary}
           </p>
-          <p className="mt-4 text-[11px] text-white/35">
+          <p className="mt-4 text-xs text-white/55">
             Product photography © Takara Tomy / Hasbro, from the official site beyblade.com. The 3D view is a
             fan-made model using the official top-view photo.
           </p>

@@ -21,7 +21,8 @@ export default function ProductCard({ product, onOpen }: { product: Product; onO
         type="button"
         onClick={() => onOpen(product)}
         aria-label={`View details for ${product.name} ${product.config}`}
-        className="group relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-steel text-left transition-colors duration-500 hover:bg-gunmetal"
+        style={{ "--glow": type.glow } as React.CSSProperties}
+        className="group relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-steel text-left ring-1 ring-cream/5 transition-[background-color,transform,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1.5 hover:bg-gunmetal hover:shadow-[0_30px_70px_-28px_var(--glow)] hover:ring-cream/15 motion-reduce:hover:translate-y-0"
       >
         <div className="relative aspect-square overflow-hidden">
           <div
@@ -45,7 +46,7 @@ export default function ProductCard({ product, onOpen }: { product: Product; onO
                 src={product.image}
                 alt={`${product.name} ${product.config} — official product photo`}
                 fill
-                sizes="(max-width: 640px) 80vw, 25vw"
+                sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 520px"
                 className="object-contain drop-shadow-[0_24px_30px_rgba(0,0,0,0.55)]"
               />
             ) : (
@@ -63,7 +64,7 @@ export default function ProductCard({ product, onOpen }: { product: Product; onO
         <div className="flex flex-1 items-end justify-between gap-3 px-5 pb-5">
           <div>
             <h3 className="font-display text-2xl font-semibold leading-tight text-cream">{product.name}</h3>
-            <p className="label mt-1 text-cream/50">
+            <p className="label mt-1 text-cream/65">
               {product.ratchet} · {product.bit}
             </p>
           </div>

@@ -7,6 +7,8 @@ export interface Generation {
   color: string;
   image: string;
   imageAlt: string;
+  /** Optional transparent product photo shown as the card's feature image instead of the drawn top. */
+  photo?: string;
   description: string;
   innovations: string[];
   series: string[];
@@ -26,7 +28,8 @@ export const GENERATIONS: Generation[] = [
     tagline: "Where it all began",
     color: "#f4a261",
     image: "/images/backgrounds/gen1-plastic.svg",
-    imageAlt: "Illustration of an early plastic-generation spinning top with a round attack ring",
+    photo: "/images/history/bakuten-dragoon.webp",
+    imageAlt: "Dragoon, a Bakuten Shoot era Beyblade with a white and red attack ring",
     description:
       "Takara launched Beyblade in 1999, re-imagining the traditional spinning top (beigoma) as a customisable battle toy fired from a launcher. The 2001 anime followed Tyson and the Bladebreakers and turned Beyblade into a worldwide craze, building a global community of bladers and tournaments.",
     innovations: [
@@ -45,7 +48,8 @@ export const GENERATIONS: Generation[] = [
     tagline: "The metal revolution",
     color: "#adb5bd",
     image: "/images/backgrounds/gen2-metal.svg",
-    imageAlt: "Illustration of a metal-generation top with a heavy die-cast fusion wheel",
+    photo: "/images/history/metal-fight-l-drago.webp",
+    imageAlt: "L-Drago, a Metal Fight Beyblade with a clear energy ring and a heavy metal fusion wheel",
     description:
       "The second generation replaced the plastic attack ring with a heavy metal Fusion Wheel. The added weight made impacts harder and battles faster, and the Metal Saga anime brought Gingka and Pegasus to a new generation of fans.",
     innovations: [
@@ -64,7 +68,8 @@ export const GENERATIONS: Generation[] = [
     tagline: "Built to burst",
     color: "#7b2ff7",
     image: "/images/backgrounds/gen3-burst.svg",
-    imageAlt: "Illustration of a Burst-generation top separating into layer, disc and driver",
+    photo: "/images/history/burst-valkyrie.webp",
+    imageAlt: "Valkyrie, a Beyblade Burst top with a blue, gold and red layer",
     description:
       "Burst introduced a spring-and-teeth locking mechanism: a strong hit could make a top fly apart, scoring a dramatic Burst Finish. Its Layer, Disc and Driver system made customisation deeper than ever across many sub-systems and a long-running anime.",
     innovations: [

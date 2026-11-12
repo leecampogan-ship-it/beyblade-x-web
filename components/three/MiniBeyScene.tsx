@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { ContactShadows, Float } from "@react-three/drei";
 import BeybladeModel from "./BeybladeModel";
 import StudioLights from "./StudioLights";
+import AdaptiveQuality from "./AdaptiveQuality";
 import type { BeyVisual } from "@/lib/types";
 
 /** Small, lightweight spinning Beyblade used for type showcases and product detail views. */
@@ -29,6 +30,7 @@ export default function MiniBeyScene({
       aria-hidden
     >
       <Suspense fallback={null}>
+        <AdaptiveQuality max={1.5} />
         <StudioLights />
         {glowColor && <pointLight position={[0, -0.4, 1.5]} intensity={10} color={glowColor} distance={6} />}
         <Float speed={reduced ? 0 : 2.4} rotationIntensity={0.25} floatIntensity={0.5}>
@@ -36,7 +38,7 @@ export default function MiniBeyScene({
             <BeybladeModel visual={visual} spin={reduced ? 0.3 : 7} castShadow={false} lowDetail />
           </group>
         </Float>
-        <ContactShadows position={[0, -1.05, 0]} opacity={0.5} scale={5} blur={2.2} far={3} resolution={256} />
+        <ContactShadows position={[0, -1.05, 0]} opacity={0.5} scale={5} blur={2.2} far={3} resolution={128} />
       </Suspense>
     </Canvas>
   );
